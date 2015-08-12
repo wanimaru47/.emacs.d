@@ -1,0 +1,76 @@
+./test
+./test
+./test
+./test
+./test
+./test
+./a.out 
+./test
+python news.py 
+python news.py 
+ls
+python news.py 
+python setup.py install
+ping mail.wanimaru.jp
+ls
+dig MX wanimaru.jp
+exit
+./test
+./test
+./test
+./test
+perl list.pl 
+ls
+ls
+perl list.pl 
+./test 
+./test
+./test
+./test
+./test
+./test
+./test
+./test
+./test
+./test
+./test
+./test
+./test
+./test
+./test
+./test
+./test
+./test
+./test
+./test
+./test
+./test
+./test
+./test
+./test
+./test
+./test
+./test
+ghci
+ls
+cd Dropbox/Program/
+ls
+cd
+cd Prog/AOJ/
+ls
+git pull
+ls
+ls
+cd volume21/
+ls
+emacs aoj2122.cpp
+./test
+env LC_ALL=en idlj Hello.idl
+la
+ls
+la
+ls -la
+cat ../.emacs init.el 
+cat ../.emacs > init.el 
+cd 
+rm .emacs
