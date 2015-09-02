@@ -1,3 +1,12 @@
+;;;;;;;;;;;;;;;;; not create tempolary file ;;;;;;;;;;
+(setq backup-inhibited t)
+(setq delete-auto-save-files t)
+(setq auto-save-default nil)
+(setq auto-save-list-file-name nil)
+(setq auto-save-list-file-prefix nil)
+(setq make-backup-files nil)
+
+;;;;;;;;;;;;;;;;; load path ;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun add-to-load-path (&rest paths)
   (let (path)
     (dolist (path paths paths)
@@ -5,9 +14,6 @@
 	(add-to-list 'load-path default-directory)
 	(if (fboundp 'normal-top-level-add-subdirs-to-load-path)
 	    (normal-top-level-add-subdirs-to-load-path))))))
-
-;; elpa
-(add-to-load-path "elpa")
 
 ;;;;;;;;;;;;;;;;;;;keybind;;;;;;;;;;;;;;;;;;;;
 (global-set-key "\C-h" 'delete-backward-char)
@@ -34,6 +40,18 @@
 
 (setup-flycheck-d-unittest)
 
+;; elpa
+(add-to-load-path "elpa")
+
+;; Emacs directory
+(when load-file-name
+  (setq user-emacs-directory (file-name-directory load-file-name)))
+
+(defun package-install-with-refresh (package)
+  (unless (assq package package-alist)
+    (package-refresh-contents))
+  (unless (package-installed-p package)
+        (package-install package)))
 
 ;;;;;;;;;;;;;;;;;;;;Auto-Complete;;;;;;;;;;;;;;;;;;;;
 (require 'auto-complete-config)
@@ -87,3 +105,38 @@
 (setq processing-location "/usr/bin/processing-java")
 (setq processing-application-dir "/Applications/Processing.app")
 (setq processing-sketch-dir "~/Documents/Processing")
+
+;; markdown-mode
+(autoload 'markdown-mode "markdown-mode"
+  "Major mode for editing Markdown files" t)
+(add-to-list 'auto-mode-alist '("\\.txt\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+(setq markdown-command "/opt/local/bin/multimarkdown")
+
+;; SSH
+(require 'tramp)
+(setq tramp-default-method "ssh")
+
+;; Install evil
+(package-install-with-refresh 'evil)
+
+;; Enable evil
+(require 'evil)
+(evil-mode 0)
+
+;; Show Git branch information to mode-line
+(let ((cell (or (memq 'mode-line-position mode-line-format)
+		(memq 'mode-line-buffer-identification mode-line-format)))
+      (newcdr '(:eval (my/update-git-branch-mode-line))))
+  (unless (member newcdr mode-line-format)
+    (setcdr cell (cons newcdr (cdr cell)))))
+
+(defun my/update-git-branch-mode-line ()
+  (let* ((branch (replace-regexp-in-string
+		  "[\r\n]+\\'" ""
+		  (shell-command-to-string "git symbolic-ref -q HEAD")))
+	 (mode-line-str (if (string-match "^refs/heads/" branch)
+			    (format "[%s]" (substring branch 11))
+			  "[Not Repo]")))
+    (propertize mode-line-str
+		'face '((:foreground "Dark green" :weight bold)))))
